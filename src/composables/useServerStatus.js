@@ -10,7 +10,7 @@ export function useServerStatus() {
 
   async function fetchStatus() {
     try {
-      const res = await fetch('https://shutterwingphotos.cn/api/mcstatus')
+      const res = await fetch('https://api.shutterwingphotos.cn/api/mcstatus')
       if (!res.ok) throw new Error('HTTP ' + res.status)
       const data = await res.json()
       online.value = !!data.online

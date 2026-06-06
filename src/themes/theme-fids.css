@@ -1,0 +1,131 @@
+/* ═══════════════════════════════════════════════════
+   FIDS BOARD THEME — Airport departure display
+   Dark, amber, Solari split-flap aesthetic
+   ═══════════════════════════════════════════════════ */
+
+html[data-theme="fids"] {
+  --bg: #0D1117;
+  --bg-2: #161B22;
+  --bg-3: #1E242C;
+  --accent: #F5A100;
+  --accent-dim: rgba(245, 161, 0, 0.1);
+  --accent-red: #FF3B30;
+  --accent-yellow: #F5A100;
+  --text: #F0F0EE;
+  --text-muted: #6E7681;
+  --border-dim: 1px solid #21262D;
+  --border-accent: 2px solid var(--accent);
+  --font-head: 'Barlow Condensed', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
+}
+
+/* No grid — clean dark monitor */
+html[data-theme="fids"] body::after {
+  display: none;
+}
+
+/* Subtle scanline effect on body */
+html[data-theme="fids"] body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Navbar: terminal wayfinding bar ────────────── */
+html[data-theme="fids"] .navbar {
+  background: rgba(13, 17, 23, 0.98);
+  border-bottom: 2px solid var(--accent);
+}
+html[data-theme="fids"] .navbar__link {
+  border-color: #21262D;
+  color: #6E7681;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.82rem;
+  letter-spacing: 0.22em;
+}
+html[data-theme="fids"] .navbar__link:hover { color: #F0F0EE; background: #161B22; }
+html[data-theme="fids"] .navbar__link.router-link-exact-active {
+  background: var(--accent); color: #0D1117;
+}
+html[data-theme="fids"] .navbar__lang { border-color: #21262D; }
+html[data-theme="fids"] .navbar__lang-btn { color: #6E7681; }
+html[data-theme="fids"] .navbar__lang-btn:hover { background: #161B22; color: #F0F0EE; }
+html[data-theme="fids"] .navbar__burger { border-color: #21262D; }
+html[data-theme="fids"] .navbar__mobile {
+  background: #0D1117;
+  border-color: #21262D;
+  border-bottom-color: var(--accent);
+}
+html[data-theme="fids"] .navbar__mobile-link { color: #6E7681; border-color: #161B22; }
+html[data-theme="fids"] .navbar__mobile-link:hover { color: #F0F0EE; background: #161B22; }
+html[data-theme="fids"] .navbar__mobile-link.router-link-exact-active {
+  color: var(--accent); background: rgba(245, 161, 0, 0.06);
+}
+
+/* ── Section labels: FIDS column header ────────── */
+html[data-theme="fids"] .sec-label {
+  background: var(--accent);
+  color: #0D1117;
+  border-color: var(--accent);
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+}
+
+html[data-theme="fids"] .sec-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(1.6rem, 3.5vw, 2.6rem);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+
+/* ── Card hover: horizontal slide (row highlight) ── */
+html[data-theme="fids"] .card-hover:hover {
+  transform: translate(-2px, 0);
+  box-shadow: 3px 0 0 var(--accent);
+}
+html[data-theme="fids"] .card-hover-red:hover {
+  transform: translate(-2px, 0);
+  box-shadow: 3px 0 0 var(--accent-red);
+}
+
+/* ── Hero: FIDS departure board typography ──────── */
+html[data-theme="fids"] .hero__eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.35em;
+  color: #6E7681;
+}
+html[data-theme="fids"] .hero__title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+html[data-theme="fids"] .hero__subtitle {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: clamp(0.9rem, 2vw, 1.15rem);
+  letter-spacing: 0.25em;
+}
+html[data-theme="fids"] .hero__statusbar {
+  border-top: 1px solid #21262D;
+}
+
+/* ── Status colors ──────────────────────────────── */
+html[data-theme="fids"] .s-online { color: #2ECC71; }
+
+/* ── Footer ─────────────────────────────────────── */
+html[data-theme="fids"] .footer { border-top: 2px solid var(--accent); }
+
+/* ── Scrollbar ──────────────────────────────────── */
+html[data-theme="fids"] ::-webkit-scrollbar-track { background: #161B22; }
+html[data-theme="fids"] ::-webkit-scrollbar-thumb { background: var(--accent); }
