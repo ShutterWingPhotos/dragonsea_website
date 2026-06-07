@@ -37,11 +37,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* CJK glyphs read smaller and blockier than Latin at the same pixel
-   size and font — scale up, loosen tracking/leading, and swap in a
-   proper CJK typeface (otherwise it falls back to bitmap-y system
-   fonts like SimSun, which look dated and hard to read). */
-html[lang="zh"] {
+/* Bump the base size site-wide — both locales should read at the
+   same scale so switching languages doesn't shift the layout/feel.
+   CJK glyphs additionally read smaller and blockier than Latin at the
+   same pixel size and font, so zh also gets extra leading/tracking and
+   a proper CJK typeface below (otherwise it falls back to bitmap-y
+   system fonts like SimSun, which look dated and hard to read). */
+html {
   font-size: 18px;
 }
 
