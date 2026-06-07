@@ -569,12 +569,13 @@ const previewItems = [
 
 .survey-title-main {
   font-family: var(--font-head);
-  font-size: clamp(4.5rem, 12vw, 9rem);
+  font-size: clamp(2.4rem, 13vw, 9rem);
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--accent);
   text-transform: uppercase;
   line-height: 0.9;
+  overflow-wrap: anywhere;
 }
 
 .survey-title-sub {

@@ -137,8 +137,9 @@ const team = [
 .as-annot { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
 
 .as-hero-title {
-  font-family: var(--font-head); font-size: clamp(2rem, 5vw, 3.5rem);
+  font-family: var(--font-head); font-size: clamp(1.7rem, 8vw, 3.5rem);
   font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
   color: var(--accent); margin-bottom: 0.75rem;
 }
 

@@ -100,7 +100,7 @@ const galleryItems = [
 .gs-doc-ref { display: flex; align-items: center; gap: 0.75rem; font-size: 0.72rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-muted); padding: 0.4rem 0.75rem; border: 1px solid var(--border-dim); background: var(--bg-2); margin-bottom: 2rem; width: fit-content; }
 .gs-sep { color: var(--border-dim); }
 .gs-annot { font-size: 0.72rem; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
-.gs-hero-title { font-family: var(--font-head); font-size: clamp(2.5rem, 7vw, 5rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--accent); margin-bottom: 0.75rem; }
+.gs-hero-title { font-family: var(--font-head); font-size: clamp(2rem, 9vw, 5rem); font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; overflow-wrap: anywhere; color: var(--accent); margin-bottom: 0.75rem; }
 .gs-hero-desc { font-size: 0.9rem; color: var(--text-muted); letter-spacing: 0.05em; }
 .gs-section { padding: 3rem 0; }
 .gs-sec-hdr { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; }
