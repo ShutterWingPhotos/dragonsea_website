@@ -23,9 +23,10 @@
             </span>
           </div>
           <span class="hero__stat-sep">│</span>
-          <div class="hero__stat">
+          <div class="hero__stat" :title="onlineNamesTitle">
             <span class="hero__stat-label">{{ t('status-players') }}</span>
             <span class="hero__stat-val">{{ loading ? '—' : userCount }}<span class="hero__stat-dim">/128</span></span>
+            <span v-if="!hasError && users.length > 0" class="hero__stat-names">{{ users.join(', ') }}</span>
           </div>
           <span class="hero__stat-sep">│</span>
           <div class="hero__stat">
@@ -36,7 +37,7 @@
           <div class="hero__stat hero__stat--addr" @click="copyAddress">
             <span class="hero__stat-label">MC ADDR</span>
             <span class="hero__stat-val hero__stat-val--copy">
-              mc.dragonseamc.com
+              59.110.15.64:25565
               <span class="hero__copy-badge" :class="{ 'hero__copy-badge--show': copied }">{{ t('copied') }}</span>
             </span>
           </div>
@@ -60,7 +61,7 @@
           <div class="action-card card-hover" @click="copyAddress">
             <div class="action-card__icon">◈</div>
             <div class="action-card__title">{{ t('join-btn') }}</div>
-            <div class="action-card__addr">mc.dragonseamc.com</div>
+            <div class="action-card__addr">59.110.15.64:25565</div>
             <div class="action-card__hint">{{ copied ? t('copied') : t('copy-hint') }}</div>
           </div>
 
@@ -73,14 +74,14 @@
           </a>
 
           <!-- Dynmap -->
-          <a class="action-card card-hover" href="http://103.236.71.249:8100/" target="_blank">
+          <a class="action-card card-hover" href="http://59.110.15.64:8100/" target="_blank">
             <div class="action-card__icon">◉</div>
             <div class="action-card__title">{{ t('dynmap-btn') }}</div>
             <div class="action-card__desc">{{ t('dynmap-desc') }}</div>
           </a>
 
           <!-- Transit -->
-          <a class="action-card card-hover" href="http://103.236.71.249:8123/" target="_blank">
+          <a class="action-card card-hover" href="http://59.110.15.64:8888/" target="_blank">
             <div class="action-card__icon">◫</div>
             <div class="action-card__title">{{ t('transit-btn') }}</div>
             <div class="action-card__desc">{{ t('transit-desc') }}</div>
@@ -102,13 +103,8 @@
         <div class="addr-board">
           <div class="addr-row addr-row--primary card-hover" @click="copyAddress">
             <div class="addr-row__tag">{{ t('primary') }}</div>
-            <div class="addr-row__value">mc.dragonseamc.com</div>
+            <div class="addr-row__value">59.110.15.64<span class="addr-port">:25565</span></div>
             <div class="addr-row__action">{{ copied ? '✓ ' + t('copied') : t('copy-hint') }}</div>
-          </div>
-          <div class="addr-row">
-            <div class="addr-row__tag">{{ t('china-relay') }}</div>
-            <div class="addr-row__value">59.110.15.54<span class="addr-port">:25565</span></div>
-            <div class="addr-row__action addr-row__action--dim">中转服务器</div>
           </div>
         </div>
       </div>
@@ -191,23 +187,38 @@
       </div>
     </section>
 
+    <Transition name="copy-toast">
+      <div v-if="showCopyToast" class="copy-toast">
+        <span class="copy-toast__icon">✓</span>
+        {{ t('copy-success') }}
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useServerStatus } from '../../composables/useServerStatus.js'
+import { copyText } from '../../composables/useClipboard.js'
 
 const { t } = useI18n()
 const { online, userCount, latency, users, loading, hasError, latencyClass } = useServerStatus()
 
+const onlineNamesTitle = computed(() =>
+  !hasError.value && users.value.length > 0 ? users.value.join(', ') : ''
+)
+
 const copied = ref(false)
+const showCopyToast = ref(false)
+const SERVER_ADDRESS = '59.110.15.64:25565'
 
 function copyAddress() {
-  navigator.clipboard.writeText('mc.dragonseamc.com').then(() => {
+  copyText(SERVER_ADDRESS).then(() => {
     copied.value = true
+    showCopyToast.value = true
     setTimeout(() => { copied.value = false }, 2000)
+    setTimeout(() => { showCopyToast.value = false }, 2400)
   })
 }
 
@@ -220,6 +231,27 @@ const previewItems = [
 
 <style scoped>
 /* ── Hero ─────────────────────────────────── */
+.copy-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  padding: 0.85rem 1.4rem;
+  border: 1px solid var(--accent);
+  z-index: 200;
+}
+.copy-toast__icon { color: var(--accent); font-weight: 700; }
+.copy-toast-enter-active, .copy-toast-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.copy-toast-enter-from, .copy-toast-leave-to { opacity: 0; transform: translateX(-50%) translateY(10px); }
+
 .hero {
   min-height: calc(100vh - var(--nav-h));
   display: grid;
@@ -336,6 +368,20 @@ const previewItems = [
 .hero__stat-dim {
   color: var(--text-muted);
   font-size: 0.7rem;
+}
+
+.hero__stat-names {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  letter-spacing: 0.02em;
+  max-width: 12rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-width: 720px) {
+  .hero__stat-names { display: none; }
 }
 
 .hero__stat-sep {
@@ -514,9 +560,6 @@ const previewItems = [
   white-space: nowrap;
 }
 
-.addr-row__action--dim {
-  color: var(--text-muted);
-}
 
 /* ── Status board ─────────────────────────── */
 .status-loading {

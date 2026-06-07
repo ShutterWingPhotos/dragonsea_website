@@ -34,20 +34,21 @@
             <div class="sysbar-line">
               <span class="sysbar-line__dot sysbar-dot--ok"></span>
               <span class="sysbar-line__id line-color--b">LINE B</span>
-              <span class="sysbar-line__status">DYNMAP LIVE</span>
+              <span class="sysbar-line__status">BLUEMAP LIVE</span>
             </div>
             <div class="sysbar-line">
               <span class="sysbar-line__dot sysbar-dot--ok"></span>
               <span class="sysbar-line__id line-color--c">LINE C</span>
-              <span class="sysbar-line__status">TRANSIT GUIDE LIVE</span>
+              <span class="sysbar-line__status">MTR TRANSIT LIVE</span>
             </div>
           </div>
-          <div class="metro-sysbar__right">
+          <div class="metro-sysbar__right" :title="onlineNamesTitle">
             <span class="sysbar-pax">
               <span class="sysbar-pax__num">{{ loading ? '—' : userCount }}</span>
               <span class="sysbar-pax__cap">/128</span>
             </span>
             <span class="sysbar-pax__label">ONLINE NOW</span>
+            <span v-if="!hasError && users.length > 0" class="sysbar-pax__names">{{ users.join(' · ') }}</span>
           </div>
         </div>
       </div>
@@ -69,7 +70,7 @@
             <div class="metro-conn-card__body">
               <div class="metro-conn-card__platform">PLATFORM 1</div>
               <div class="metro-conn-card__dest">{{ t('join-btn') }}</div>
-              <div class="metro-conn-card__addr">mc.dragonseamc.com</div>
+              <div class="metro-conn-card__addr">59.110.15.64:25565</div>
               <div class="metro-conn-card__action">{{ copied ? t('copied') : t('copy-hint') }}</div>
             </div>
           </div>
@@ -86,7 +87,7 @@
           </a>
 
           <!-- Dynmap -->
-          <a class="metro-conn-card" href="http://103.236.71.249:8100/" target="_blank">
+          <a class="metro-conn-card" href="http://59.110.15.64:8100/" target="_blank">
             <div class="metro-conn-card__line line-bg--b"></div>
             <div class="metro-conn-card__body">
               <div class="metro-conn-card__platform">LINE B</div>
@@ -96,7 +97,7 @@
           </a>
 
           <!-- Transit -->
-          <a class="metro-conn-card" href="http://103.236.71.249:8123/" target="_blank">
+          <a class="metro-conn-card" href="http://59.110.15.64:8888/" target="_blank">
             <div class="metro-conn-card__line line-bg--c"></div>
             <div class="metro-conn-card__body">
               <div class="metro-conn-card__platform">LINE C</div>
@@ -104,15 +105,6 @@
               <div class="metro-conn-card__desc">{{ t('transit-desc') }}</div>
             </div>
           </a>
-        </div>
-
-        <!-- China relay note -->
-        <div class="metro-relay">
-          <div class="metro-relay__dot">⬤</div>
-          <div class="metro-relay__body">
-            <span class="metro-relay__label">{{ t('china-relay') }}</span>
-            <span class="metro-relay__addr">59.110.15.54<span class="metro-relay__port">:25565</span></span>
-          </div>
         </div>
       </div>
     </section>
@@ -184,22 +176,38 @@
       </div>
     </section>
 
+    <Transition name="copy-toast">
+      <div v-if="showCopyToast" class="copy-toast">
+        <span class="copy-toast__icon">✓</span>
+        {{ t('copy-success') }}
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useServerStatus } from '../../composables/useServerStatus.js'
+import { copyText } from '../../composables/useClipboard.js'
 
 const { t } = useI18n()
 const { online, userCount, latency, users, loading, hasError, latencyClass } = useServerStatus()
+
+const onlineNamesTitle = computed(() =>
+  !hasError.value && users.value.length > 0 ? users.value.join(', ') : ''
+)
+
 const copied = ref(false)
+const showCopyToast = ref(false)
+const SERVER_ADDRESS = '59.110.15.64:25565'
 
 function copyAddress() {
-  navigator.clipboard.writeText('mc.dragonseamc.com').then(() => {
+  copyText(SERVER_ADDRESS).then(() => {
     copied.value = true
+    showCopyToast.value = true
     setTimeout(() => { copied.value = false }, 2000)
+    setTimeout(() => { showCopyToast.value = false }, 2400)
   })
 }
 
@@ -212,6 +220,27 @@ const previewItems = [
 
 <style scoped>
 .metro-home { min-height: 100vh; }
+
+.copy-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  padding: 0.85rem 1.4rem;
+  border-radius: 4px;
+  z-index: 200;
+}
+.copy-toast__icon { color: var(--accent); font-weight: 700; }
+.copy-toast-enter-active, .copy-toast-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.copy-toast-enter-from, .copy-toast-leave-to { opacity: 0; transform: translateX(-50%) translateY(10px); }
 
 /* ── Hero ────────────────────────────────── */
 .metro-hero {
@@ -368,6 +397,16 @@ const previewItems = [
 }
 .sysbar-pax__cap { color: var(--text-muted); font-size: 0.75rem; font-family: var(--font-mono); }
 .sysbar-pax__label { font-size: 0.58rem; letter-spacing: 0.15em; color: var(--text-muted); text-transform: uppercase; }
+.sysbar-pax__names {
+  margin-top: 0.2rem;
+  font-size: 0.6rem;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  max-width: 14rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* ── Section shared ──────────────────────── */
 .metro-section {
@@ -498,31 +537,6 @@ const previewItems = [
 }
 
 /* China relay strip */
-.metro-relay {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 2px;
-  padding: 0.75rem 1.25rem;
-  background: var(--bg-2);
-  border: 1px solid var(--border-dim);
-  border-left: 3px dashed var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: 0.75rem;
-}
-
-.metro-relay__dot { color: var(--text-muted); font-size: 0.5rem; }
-
-.metro-relay__body {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.metro-relay__label { color: var(--text-muted); font-size: 0.7rem; }
-.metro-relay__addr  { color: var(--text); font-size: 0.82rem; }
-.metro-relay__port  { color: var(--text-muted); }
 
 /* ── Status board ────────────────────────── */
 .metro-loading {

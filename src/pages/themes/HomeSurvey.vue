@@ -46,11 +46,12 @@
               {{ loading ? '...' : hasError ? t('error') : (online ? t('survey-operational') : t('survey-offline')) }}
             </div>
           </div>
-          <div class="survey-data-cell">
+          <div class="survey-data-cell" :title="onlineNamesTitle">
             <div class="survey-data-cell__label">{{ t('survey-active-residents') }}</div>
             <div class="survey-data-cell__val">
               {{ loading ? '—' : hasError ? '—' : userCount }}<span class="survey-dim"> / 128</span>
             </div>
+            <div v-if="!hasError && users.length > 0" class="survey-data-cell__names">{{ users.join(' · ') }}</div>
           </div>
           <div class="survey-data-cell">
             <div class="survey-data-cell__label">{{ t('survey-signal-latency') }}</div>
@@ -61,7 +62,7 @@
           <div class="survey-data-cell survey-data-cell--addr" @click="copyAddress">
             <div class="survey-data-cell__label">{{ t('survey-server-address') }}</div>
             <div class="survey-data-cell__val survey-data-cell__val--addr">
-              mc.dragonseamc.com
+              59.110.15.64<span class="survey-dim">:25565</span>
               <span class="survey-copied" :class="{ 'survey-copied--show': copied }">{{ t('copied') }}</span>
             </div>
           </div>
@@ -210,7 +211,84 @@
       </svg>
     </section>
 
-    <!-- ═══ SITE PLOTS (Join actions) ═══ -->
+    <!-- ═══ LOWER CONTENT — blueprint sketch backdrop ═══ -->
+    <div class="survey-lower">
+      <svg class="survey-blueprint" viewBox="0 0 1400 1800" preserveAspectRatio="xMidYMin slice" aria-hidden="true">
+        <defs>
+          <pattern id="bp-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="var(--border-dim)" stroke-width="1"/>
+          </pattern>
+        </defs>
+        <rect x="0" y="0" width="1400" height="1800" fill="url(#bp-grid)" opacity="0.5"/>
+
+        <!-- Elevation sketch: low-rise block with grid facade -->
+        <g class="bp-sketch" stroke="var(--accent)" stroke-width="2" fill="none" opacity="0.16">
+          <rect x="80" y="120" width="260" height="340"/>
+          <line x1="80" y1="190" x2="340" y2="190"/>
+          <line x1="80" y1="260" x2="340" y2="260"/>
+          <line x1="80" y1="330" x2="340" y2="330"/>
+          <line x1="80" y1="400" x2="340" y2="400"/>
+          <line x1="150" y1="120" x2="150" y2="460"/>
+          <line x1="220" y1="120" x2="220" y2="460"/>
+          <line x1="290" y1="120" x2="290" y2="460"/>
+          <path d="M 80 120 L 210 50 L 340 120 Z"/>
+          <line x1="40" y1="460" x2="380" y2="460"/>
+        </g>
+
+        <!-- Elevation sketch: tower with dimension lines -->
+        <g class="bp-sketch" stroke="var(--accent)" stroke-width="2" fill="none" opacity="0.13">
+          <rect x="980" y="60" width="180" height="520"/>
+          <line x1="980" y1="140" x2="1160" y2="140"/>
+          <line x1="980" y1="220" x2="1160" y2="220"/>
+          <line x1="980" y1="300" x2="1160" y2="300"/>
+          <line x1="980" y1="380" x2="1160" y2="380"/>
+          <line x1="980" y1="460" x2="1160" y2="460"/>
+          <line x1="1030" y1="60" x2="1030" y2="580"/>
+          <line x1="1080" y1="60" x2="1080" y2="580"/>
+          <line x1="1130" y1="60" x2="1130" y2="580"/>
+          <!-- dimension markers -->
+          <line x1="940" y1="60" x2="940" y2="580" stroke-dasharray="4 6"/>
+          <line x1="930" y1="60" x2="950" y2="60"/>
+          <line x1="930" y1="580" x2="950" y2="580"/>
+          <text x="918" y="320" fill="var(--accent)" stroke="none" font-family="var(--font-mono)" font-size="14" transform="rotate(-90 918 320)">52.0M</text>
+        </g>
+
+        <!-- Compass / north arrow annotation -->
+        <g class="bp-sketch" stroke="var(--accent)" stroke-width="1.5" fill="none" opacity="0.18">
+          <circle cx="1240" cy="780" r="46"/>
+          <path d="M 1240 738 L 1252 786 L 1240 774 L 1228 786 Z" fill="var(--accent)" stroke="none"/>
+          <text x="1234" y="850" fill="var(--accent)" stroke="none" font-family="var(--font-mono)" font-size="13">N</text>
+        </g>
+
+        <!-- Floor plan sketch: simple room outline with door swing -->
+        <g class="bp-sketch" stroke="var(--accent)" stroke-width="2" fill="none" opacity="0.14">
+          <rect x="120" y="980" width="420" height="300"/>
+          <line x1="120" y1="1130" x2="320" y2="1130"/>
+          <line x1="320" y1="1130" x2="320" y2="1280"/>
+          <path d="M 320 1130 A 90 90 0 0 1 410 1220" stroke-dasharray="3 5"/>
+          <circle cx="320" cy="1130" r="3" fill="var(--accent)" stroke="none"/>
+          <rect x="450" y="1010" width="60" height="30"/>
+          <rect x="450" y="1060" width="60" height="30"/>
+        </g>
+
+        <!-- Section / elevation marker callouts -->
+        <g class="bp-sketch" stroke="var(--accent)" stroke-width="1.5" fill="none" opacity="0.15">
+          <line x1="700" y1="950" x2="1340" y2="950" stroke-dasharray="10 6"/>
+          <circle cx="700" cy="950" r="16"/>
+          <text x="694" y="955" fill="var(--accent)" stroke="none" font-family="var(--font-mono)" font-size="13">A</text>
+          <circle cx="1340" cy="950" r="16"/>
+          <text x="1334" y="955" fill="var(--accent)" stroke="none" font-family="var(--font-mono)" font-size="13">A'</text>
+        </g>
+
+        <!-- Distant low-rise row, simple gabled outlines -->
+        <g class="bp-sketch" stroke="var(--accent)" stroke-width="1.5" fill="none" opacity="0.11">
+          <path d="M 620 1480 L 620 1620 L 760 1620 L 760 1480 L 690 1430 Z"/>
+          <path d="M 780 1500 L 780 1620 L 900 1620 L 900 1500 L 840 1455 Z"/>
+          <path d="M 920 1470 L 920 1620 L 1080 1620 L 1080 1470 L 1000 1420 Z"/>
+        </g>
+      </svg>
+
+      <!-- ═══ SITE PLOTS (Join actions) ═══ -->
     <section class="survey-section">
       <div class="container">
         <div class="survey-sec-hdr">
@@ -231,7 +309,7 @@
             </div>
             <div class="survey-plot__ref">{{ t('survey-plot') }} 01</div>
             <div class="survey-plot__title">{{ t('join-btn') }}</div>
-            <div class="survey-plot__addr">mc.dragonseamc.com</div>
+            <div class="survey-plot__addr">59.110.15.64:25565</div>
             <div class="survey-plot__action">{{ copied ? '✓ ' + t('copied') : t('copy-hint') }}</div>
           </div>
 
@@ -246,11 +324,14 @@
             <div class="survey-plot__ref">{{ t('survey-plot') }} 02</div>
             <div class="survey-plot__title">{{ t('modpack-btn') }}</div>
             <div class="survey-plot__desc">{{ t('modpack-desc') }}</div>
-            <div class="survey-plot__tag survey-plot__tag--warn">{{ t('survey-required') }}</div>
+            <div class="survey-plot__row">
+              <span class="survey-plot__tag survey-plot__tag--warn">{{ t('survey-required') }}</span>
+              <span class="survey-plot__cta">{{ t('survey-open-link') }}</span>
+            </div>
           </a>
 
-          <!-- Plot 3: Dynmap -->
-          <a class="survey-plot" href="http://103.236.71.249:8100/" target="_blank">
+          <!-- Plot 3: BlueMap -->
+          <a class="survey-plot" href="http://59.110.15.64:8100/" target="_blank">
             <div class="survey-plot__brackets" aria-hidden="true">
               <span class="brk brk--tl"></span>
               <span class="brk brk--tr"></span>
@@ -260,10 +341,11 @@
             <div class="survey-plot__ref">{{ t('survey-plot') }} 03</div>
             <div class="survey-plot__title">{{ t('dynmap-btn') }}</div>
             <div class="survey-plot__desc">{{ t('dynmap-desc') }}</div>
+            <span class="survey-plot__cta">{{ t('survey-open-link') }}</span>
           </a>
 
-          <!-- Plot 4: Transit -->
-          <a class="survey-plot" href="http://103.236.71.249:8123/" target="_blank">
+          <!-- Plot 4: MTR Transit Map -->
+          <a class="survey-plot" href="http://59.110.15.64:8888/" target="_blank">
             <div class="survey-plot__brackets" aria-hidden="true">
               <span class="brk brk--tl"></span>
               <span class="brk brk--tr"></span>
@@ -273,16 +355,9 @@
             <div class="survey-plot__ref">{{ t('survey-plot') }} 04</div>
             <div class="survey-plot__title">{{ t('transit-btn') }}</div>
             <div class="survey-plot__desc">{{ t('transit-desc') }}</div>
+            <span class="survey-plot__cta">{{ t('survey-open-link') }}</span>
           </a>
 
-        </div>
-
-        <!-- China relay note -->
-        <div class="survey-relay">
-          <span class="survey-relay__label">{{ t('survey-alt-route') }} —</span>
-          <span class="survey-relay__name">{{ t('china-relay') }}</span>
-          <span class="survey-relay__sep">·</span>
-          <span class="survey-relay__addr">59.110.15.54<span class="survey-dim">:25565</span></span>
         </div>
       </div>
     </section>
@@ -356,22 +431,41 @@
       </div>
     </section>
 
+    </div>
+
+    <!-- Copy confirmation toast -->
+    <Transition name="survey-toast">
+      <div v-if="showCopyToast" class="survey-toast">
+        <span class="survey-toast__icon">✓</span>
+        {{ t('copy-success') }}
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useServerStatus } from '../../composables/useServerStatus.js'
+import { copyText } from '../../composables/useClipboard.js'
 
 const { t } = useI18n()
 const { online, userCount, latency, users, loading, hasError, latencyClass } = useServerStatus()
 const copied = ref(false)
+const showCopyToast = ref(false)
+
+const onlineNamesTitle = computed(() =>
+  !hasError.value && users.value.length > 0 ? users.value.join(', ') : ''
+)
+
+const SERVER_ADDRESS = '59.110.15.64:25565'
 
 function copyAddress() {
-  navigator.clipboard.writeText('mc.dragonseamc.com').then(() => {
+  copyText(SERVER_ADDRESS).then(() => {
     copied.value = true
+    showCopyToast.value = true
     setTimeout(() => { copied.value = false }, 2000)
+    setTimeout(() => { showCopyToast.value = false }, 2400)
   })
 }
 
@@ -576,6 +670,17 @@ const previewItems = [
   position: relative;
 }
 
+.survey-data-cell__names {
+  margin-top: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .survey-data-cell__val--addr {
   font-family: var(--font-mono);
   font-size: 0.78rem;
@@ -605,7 +710,55 @@ const previewItems = [
 .survey-dim { font-size: 0.75em; font-weight: 400; color: var(--text-muted); font-family: var(--font-mono); }
 
 /* ── Section shared ──────────────────────── */
+.survey-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  padding: 0.85rem 1.4rem;
+  border: 1px solid var(--accent);
+  z-index: 200;
+}
+
+.survey-toast__icon {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.survey-toast-enter-active,
+.survey-toast-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.survey-toast-enter-from,
+.survey-toast-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+}
+
+.survey-lower {
+  position: relative;
+  isolation: isolate;
+}
+
+.survey-blueprint {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+}
+
 .survey-section {
+  position: relative;
   padding: 3rem 0;
   border-bottom: 1px dashed var(--border-dim);
 }
@@ -726,25 +879,36 @@ const previewItems = [
   letter-spacing: 0.15em;
   padding: 2px 6px;
   align-self: flex-start;
-  margin-top: auto;
 }
 .survey-plot__tag--warn { background: var(--accent-red); color: #fff; }
 
-.survey-relay {
+.survey-plot__row {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.75rem;
-  margin-top: 1.25rem;
-  padding: 0.65rem 1rem;
-  border: 1px dashed var(--border-dim);
-  font-size: 0.72rem;
-  flex-wrap: wrap;
+  margin-top: auto;
 }
 
-.survey-relay__label { color: var(--text-muted); font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; }
-.survey-relay__name  { color: var(--text-muted); }
-.survey-relay__sep   { color: var(--border-dim); }
-.survey-relay__addr  { color: var(--accent); font-family: var(--font-mono); }
+.survey-plot__cta {
+  align-self: flex-start;
+  margin-top: auto;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.4rem 0.85rem;
+  transition: background 0.15s, color 0.15s;
+}
+
+.survey-plot:hover .survey-plot__cta {
+  background: var(--accent);
+  color: var(--bg);
+}
+
 
 /* ── Readout ─────────────────────────────── */
 .survey-loading {

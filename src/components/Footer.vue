@@ -8,8 +8,8 @@
       </div>
       <div class="footer__right">
         <a href="https://mcd.shutterwingphotos.cn/" target="_blank" class="footer__link">Official Site</a>
-        <a href="http://103.236.71.249:8100/" target="_blank" class="footer__link">Dynmap</a>
-        <a href="http://103.236.71.249:8123/" target="_blank" class="footer__link">Transit</a>
+        <a href="http://59.110.15.64:8100/" target="_blank" class="footer__link">BlueMap</a>
+        <a href="http://59.110.15.64:8888/" target="_blank" class="footer__link">MTR Transit</a>
       </div>
     </div>
   </footer>

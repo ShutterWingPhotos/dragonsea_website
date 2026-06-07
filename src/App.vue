@@ -21,7 +21,10 @@ import SiteFooter from './components/Footer.vue'
 import ThemeSwitcher from './components/ThemeSwitcher.vue'
 
 const { t, locale } = useI18n()
-watch(locale, () => { document.title = t('page-title') }, { immediate: true })
+watch(locale, () => {
+  document.title = t('page-title')
+  document.documentElement.lang = locale.value
+}, { immediate: true })
 </script>
 
 <style>

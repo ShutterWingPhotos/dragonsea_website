@@ -34,16 +34,17 @@
             <span v-else class="fids-status fids-status--delay">OFFLINE</span>
           </div>
           <div class="fids-row__gate fids-col-gate">
-            mc.dragonseamc.com
+            59.110.15.64:25565
             <button class="fids-copy" @click="copyAddress">
               {{ copied ? t('copied') : 'COPY' }}
             </button>
           </div>
-          <div class="fids-row__time fids-col-time">
+          <div class="fids-row__time fids-col-time" :title="onlineNamesTitle">
             <span v-if="!loading && !hasError">
               {{ userCount }}<span class="fids-dim">/128</span>
             </span>
             <span v-else>—</span>
+            <span v-if="!hasError && users.length > 0" class="fids-row__names">{{ users.join(' · ') }}</span>
           </div>
         </div>
 
@@ -62,37 +63,26 @@
 
         <div class="fids-row fids-row--secondary" style="--row-delay:0.55s">
           <div class="fids-row__dest">
-            <span class="fids-row__name fids-dim-name">LIVE WORLD MAP</span>
-            <span class="fids-row__sub">{{ locale === 'zh' ? '卫星动态地图' : 'SATELLITE DYNMAP' }}</span>
+            <span class="fids-row__name fids-dim-name">LIVE BLUEMAP</span>
+            <span class="fids-row__sub">{{ locale === 'zh' ? 'BlueMap 3D 地图' : '3D WORLD VIEWER' }}</span>
           </div>
           <div class="fids-row__status"><span class="fids-status fids-status--ok">LIVE</span></div>
           <div class="fids-row__gate fids-col-gate">
-            <a href="http://103.236.71.249:8100/" target="_blank" class="fids-link">PORT 8100 ↗</a>
+            <a href="http://59.110.15.64:8100/" target="_blank" class="fids-link">PORT 8100 ↗</a>
           </div>
           <div class="fids-row__time fids-col-time">24H</div>
         </div>
 
         <div class="fids-row fids-row--secondary" style="--row-delay:0.8s">
           <div class="fids-row__dest">
-            <span class="fids-row__name fids-dim-name">TRANSIT NETWORK</span>
-            <span class="fids-row__sub">{{ locale === 'zh' ? '交通线网图' : 'RAIL ROUTE GUIDE' }}</span>
+            <span class="fids-row__name fids-dim-name">MTR TRANSIT MAP</span>
+            <span class="fids-row__sub">{{ locale === 'zh' ? 'MTR 交通地图' : 'RAIL ROUTE GUIDE' }}</span>
           </div>
           <div class="fids-row__status"><span class="fids-status fids-status--ok">LIVE</span></div>
           <div class="fids-row__gate fids-col-gate">
-            <a href="http://103.236.71.249:8123/" target="_blank" class="fids-link">PORT 8123 ↗</a>
+            <a href="http://59.110.15.64:8888/" target="_blank" class="fids-link">PORT 8888 ↗</a>
           </div>
           <div class="fids-row__time fids-col-time">24H</div>
-        </div>
-
-        <!-- China relay row -->
-        <div class="fids-row fids-row--relay" style="--row-delay:1s">
-          <div class="fids-row__dest">
-            <span class="fids-row__name fids-dim-name">CHINA RELAY</span>
-            <span class="fids-row__sub">移动/联通 推荐线路</span>
-          </div>
-          <div class="fids-row__status"><span class="fids-status fids-status--alt">ALT ROUTE</span></div>
-          <div class="fids-row__gate fids-col-gate">59.110.15.54<span class="fids-dim">:25565</span></div>
-          <div class="fids-row__time fids-col-time">—</div>
         </div>
 
       </div>
@@ -167,25 +157,40 @@
       </div>
     </section>
 
+    <Transition name="copy-toast">
+      <div v-if="showCopyToast" class="copy-toast">
+        <span class="copy-toast__icon">✓</span>
+        {{ t('copy-success') }}
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useServerStatus } from '../../composables/useServerStatus.js'
+import { copyText } from '../../composables/useClipboard.js'
 
 const { t, locale } = useI18n()
 const { online, userCount, latency, users, loading, hasError, latencyClass } = useServerStatus()
 
+const onlineNamesTitle = computed(() =>
+  !hasError.value && users.value.length > 0 ? users.value.join(', ') : ''
+)
+
 const copied = ref(false)
+const showCopyToast = ref(false)
 const clock = ref('')
 const scrambled = ref('##########')
+const SERVER_ADDRESS = '59.110.15.64:25565'
 
 function copyAddress() {
-  navigator.clipboard.writeText('mc.dragonseamc.com').then(() => {
+  copyText(SERVER_ADDRESS).then(() => {
     copied.value = true
+    showCopyToast.value = true
     setTimeout(() => { copied.value = false }, 2000)
+    setTimeout(() => { showCopyToast.value = false }, 2400)
   })
 }
 
@@ -229,6 +234,26 @@ const previewItems = [
 </script>
 
 <style scoped>
+.copy-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  letter-spacing: 0.02em;
+  padding: 0.85rem 1.4rem;
+  z-index: 200;
+}
+.copy-toast__icon { color: var(--accent); font-weight: 700; }
+.copy-toast-enter-active, .copy-toast-leave-active { transition: opacity 0.2s ease, transform 0.2s ease; }
+.copy-toast-enter-from, .copy-toast-leave-to { opacity: 0; transform: translateX(-50%) translateY(10px); }
+
 .fids-home {
   min-height: 100vh;
   font-family: var(--font-mono);
@@ -316,14 +341,6 @@ const previewItems = [
   background: var(--bg-2);
 }
 
-.fids-row--relay {
-  background: var(--bg);
-  opacity: 0;
-  animation: fids-row-in 0.25s ease forwards;
-  animation-delay: var(--row-delay, 0s);
-  border-bottom: 2px solid var(--border-dim);
-}
-
 @keyframes fids-row-in {
   from { opacity: 0; transform: translateX(6px); }
   to   { opacity: 1; transform: translateX(0); }
@@ -376,7 +393,6 @@ const previewItems = [
 .fids-status--bad  { background: rgba(255, 59, 48, 0.15); color: #FF3B30; }
 .fids-status--wait { color: var(--text-muted); border: 1px solid var(--border-dim); }
 .fids-status--req  { background: rgba(245, 161, 0, 0.15); color: var(--accent); }
-.fids-status--alt  { color: var(--text-muted); border: 1px dashed var(--border-dim); }
 .fids-status--delay { background: rgba(255, 59, 48, 0.12); color: #FF3B30; }
 
 .fids-row__gate {
@@ -393,6 +409,19 @@ const previewItems = [
   font-size: 1rem;
   font-weight: 700;
   color: var(--text);
+}
+
+.fids-row__names {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.6rem;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  color: var(--text-muted);
+  max-width: 11rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .fids-copy {

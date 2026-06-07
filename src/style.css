@@ -37,6 +37,26 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* CJK glyphs read smaller and blockier than Latin at the same pixel
+   size and font — scale up, loosen tracking/leading, and swap in a
+   proper CJK typeface (otherwise it falls back to bitmap-y system
+   fonts like SimSun, which look dated and hard to read). */
+html[lang="zh"] {
+  font-size: 18px;
+}
+
+/* [data-theme] bumps specificity so this wins over each theme's own
+   --font-head / --font-mono declarations (which also key off [data-theme]). */
+html[lang="zh"][data-theme] {
+  --font-head: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  --font-mono: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+html[lang="zh"] body {
+  line-height: 1.85;
+  letter-spacing: 0.02em;
+}
+
 @media (max-width: 480px) {
   .container {
     padding: 0 1rem;
