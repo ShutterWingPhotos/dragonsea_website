@@ -14,26 +14,18 @@ The official website for **DragonSea Minecraft**, a modern city-building / railw
 
 ## Features
 
-- **4 selectable themes** — players vote for their preferred design via a floating THEME panel, saved to localStorage
+- **Urban Survey design** — city planning blueprint aesthetic, warm paper and Prussian blue ink
+- **Light / dark mode** — toggle in the navbar (☀ / ☾), saved to localStorage; dark mode swaps to a "night blueprint" palette
 - **Full i18n** — all UI text in English and Chinese
 - **Live server status** — online player count and latency via Minecraft server API
-- **Animated SVG city skyline** — buildings rise on page load in the Urban Survey theme
-
-## Themes
-
-| Command | Theme | Description |
-|---|---|---|
-| `npm run dev` | Blocky Brutalist | Original dark brutalist style |
-| `npm run dev:metro` | Metro Map | Light transit-map aesthetic |
-| `npm run dev:fids` | FIDS Board | Dark amber airport departure board |
-| `npm run dev:survey` | Urban Survey | Warm paper engineering document style |
+- **Animated SVG city skyline** — buildings rise on page load
+- **Gallery lightbox** — click a screenshot to zoom in, click outside the image to close
 
 ## Getting Started
 
 ```bash
 npm install
-npm run dev          # Brutalist (default)
-npm run dev:survey   # Urban Survey theme
+npm run dev          # Start dev server
 npm run build        # Production build
 ```
 

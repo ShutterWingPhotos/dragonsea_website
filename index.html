@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DragonSea Minecraft</title>
-    <!-- Apply saved theme before paint to prevent flash -->
+    <!-- Apply saved light/dark mode before paint to prevent flash -->
     <script>
       (function() {
-        var t = localStorage.getItem('ds-theme') || 'brutalist';
-        document.documentElement.setAttribute('data-theme', t);
+        var m = localStorage.getItem('ds-mode') || 'light';
+        document.documentElement.setAttribute('data-mode', m);
       })();
     </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">

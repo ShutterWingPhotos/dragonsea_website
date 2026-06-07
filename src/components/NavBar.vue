@@ -28,6 +28,12 @@
         >ZH</button>
       </div>
 
+      <!-- Light/dark mode toggle -->
+      <button class="navbar__mode-btn" @click="toggleMode" :title="mode === 'dark' ? t('mode-light') : t('mode-dark')">
+        <span v-if="mode === 'dark'">☾</span>
+        <span v-else>☀</span>
+      </button>
+
       <!-- Mobile burger -->
       <button
         class="navbar__burger"
@@ -63,6 +69,10 @@
           :class="{ 'navbar__lang-btn--active': locale === 'zh' }"
           @click="setLocale('zh')"
         >ZH</button>
+        <button class="navbar__mode-btn navbar__mode-btn--mobile" @click="toggleMode" :title="mode === 'dark' ? t('mode-light') : t('mode-dark')">
+          <span v-if="mode === 'dark'">☾</span>
+          <span v-else>☀</span>
+        </button>
       </div>
     </div>
   </nav>
@@ -71,8 +81,10 @@
 <script setup>
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useColorMode } from '../composables/useColorMode.js'
 
 const { t, locale } = useI18n()
+const { mode, toggleMode } = useColorMode()
 const menuOpen = ref(false)
 
 function setLocale(lang) {
@@ -188,6 +200,33 @@ function closeMenu() {
   background: var(--accent) !important;
   color: var(--bg) !important;
   font-weight: 700;
+}
+
+/* Light/dark mode toggle */
+.navbar__mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  background: none;
+  border: 1px solid #1e1e1e;
+  color: var(--text-muted);
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 0.12s, background 0.12s, border-color 0.12s;
+}
+
+.navbar__mode-btn:hover {
+  color: var(--accent);
+  background: #141414;
+  border-color: var(--accent);
+}
+
+.navbar__mode-btn--mobile {
+  margin-left: 0.5rem;
 }
 
 /* Burger button (hidden on desktop) */

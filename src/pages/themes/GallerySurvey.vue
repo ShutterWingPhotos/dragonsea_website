@@ -24,7 +24,13 @@
             class="gs-item"
             :class="item.span"
           >
-            <div class="gs-item__inner" :style="{ background: item.bg }">
+            <div
+              class="gs-item__inner"
+              :class="{ 'gs-item__inner--clickable': item.img }"
+              :style="{ background: item.img ? undefined : item.bg }"
+              @click="item.img && openLightbox(item)"
+            >
+              <img v-if="item.img" :src="item.img" :alt="t(item.labelKey)" class="gs-item__photo" loading="lazy">
               <div class="gs-item__ref">DOC-{{ String(i + 1).padStart(3, '0') }}</div>
               <div class="gs-item__label">{{ t(item.labelKey) }}</div>
               <div class="gs-item__overlay">{{ t('survey-view-archive') }}</div>
@@ -41,19 +47,48 @@
         </div>
       </div>
     </section>
+
+    <Teleport to="body">
+      <Transition name="gs-lightbox">
+        <div v-if="lightboxItem" class="gs-lightbox" @click.self="closeLightbox">
+          <button class="gs-lightbox__close" @click="closeLightbox" :aria-label="t('survey-close-archive')">✕</button>
+          <figure class="gs-lightbox__frame">
+            <img :src="lightboxItem.img" :alt="t(lightboxItem.labelKey)" class="gs-lightbox__img">
+            <figcaption class="gs-lightbox__caption">
+              <span class="gs-lightbox__ref">DOC-{{ String(lightboxIndex + 1).padStart(3, '0') }}</span>
+              {{ t(lightboxItem.labelKey) }}
+            </figcaption>
+          </figure>
+        </div>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
+
+const lightboxItem = ref(null)
+const lightboxIndex = ref(-1)
+
+function openLightbox(item) {
+  lightboxItem.value = item
+  lightboxIndex.value = galleryItems.indexOf(item)
+}
+
+function closeLightbox() {
+  lightboxItem.value = null
+  lightboxIndex.value = -1
+}
 const galleryItems = [
-  { bg: 'linear-gradient(140deg, #091a0e, #122d18)', labelKey: 'gallery-city-center', span: 'gs-item--tall' },
-  { bg: 'linear-gradient(140deg, #0a1520, #122338)', labelKey: 'gallery-metro-line-1', span: '' },
-  { bg: 'linear-gradient(140deg, #1a0a0a, #2e1515)', labelKey: 'gallery-airport-express', span: '' },
-  { bg: 'linear-gradient(140deg, #0e0e0a, #1e1e12)', labelKey: 'gallery-downtown', span: 'gs-item--wide' },
-  { bg: 'linear-gradient(140deg, #150a1a, #261535)', labelKey: 'gallery-transit-hub', span: '' },
-  { bg: 'linear-gradient(140deg, #0a1a18, #12302c)', labelKey: 'gallery-suburbs', span: '' },
+  { img: '/gallery/above_ground_subway_station.png', labelKey: 'gallery-above-ground-subway', span: 'gs-item--tall' },
+  { img: '/gallery/airport_overview.png', labelKey: 'gallery-airport-overview', span: '' },
+  { img: '/gallery/airport_subway_station_interior.png', labelKey: 'gallery-airport-subway-interior', span: '' },
+  { img: '/gallery/small_airport_overview.png', labelKey: 'gallery-small-airport-overview', span: 'gs-item--wide' },
+  { img: '/gallery/dragonsea_centralbusinessdistrict_skyscrapers.png', labelKey: 'gallery-cbd-skyscrapers', span: '' },
+  { img: '/gallery/light_rail_line_one.png', labelKey: 'gallery-light-rail-line-one', span: '' },
   { bg: 'linear-gradient(140deg, #1a100a, #2e1e12)', labelKey: 'gallery-architecture', span: 'gs-item--tall' },
   { bg: 'linear-gradient(140deg, #0a0f1a, #121e38)', labelKey: 'gallery-night-view', span: '' },
 ]
@@ -80,6 +115,8 @@ const galleryItems = [
   display: flex; flex-direction: column; justify-content: space-between; padding: 0.75rem;
   border: 2px solid transparent; transition: border-color 0.15s;
 }
+.gs-item__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1; }
+.gs-item__inner--clickable { cursor: zoom-in; }
 .gs-item__inner:hover { border-color: var(--accent); }
 .gs-item__inner:hover .gs-item__overlay { opacity: 1; }
 .gs-item__ref { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(245,241,232,0.35); z-index: 2; position: relative; }
@@ -101,5 +138,94 @@ const galleryItems = [
 @media (max-width: 480px) {
   .gs-grid { grid-template-columns: 1fr; grid-auto-rows: 190px; }
   .gs-item--wide, .gs-item--tall { grid-column: span 1; grid-row: span 1; }
+}
+
+/* ── Lightbox ─────────────────────────────── */
+.gs-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4vh 4vw;
+  background: rgba(20, 25, 32, 0.88);
+  backdrop-filter: blur(4px);
+  cursor: zoom-out;
+}
+
+.gs-lightbox__frame {
+  position: relative;
+  max-width: min(1100px, 92vw);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  cursor: default;
+}
+
+.gs-lightbox__img {
+  display: block;
+  width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border: 2px solid var(--accent);
+  background: var(--bg-2);
+}
+
+.gs-lightbox__caption {
+  margin-top: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #F5F1E8;
+}
+
+.gs-lightbox__ref {
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--accent-yellow);
+}
+
+.gs-lightbox__close {
+  position: absolute;
+  top: -0.25rem;
+  right: -0.25rem;
+  transform: translate(50%, -50%);
+  width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: var(--bg);
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 1;
+  transition: background 0.12s, color 0.12s;
+}
+
+.gs-lightbox__close:hover {
+  background: var(--accent-red);
+}
+
+.gs-lightbox-enter-active,
+.gs-lightbox-leave-active {
+  transition: opacity 0.18s ease;
+}
+.gs-lightbox-enter-from,
+.gs-lightbox-leave-to {
+  opacity: 0;
+}
+
+@media (max-width: 640px) {
+  .gs-lightbox__close {
+    top: 0.5rem;
+    right: 0.5rem;
+    transform: none;
+  }
 }
 </style>

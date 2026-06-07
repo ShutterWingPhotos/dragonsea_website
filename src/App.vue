@@ -9,7 +9,6 @@
       </RouterView>
     </main>
     <SiteFooter />
-    <ThemeSwitcher />
   </div>
 </template>
 
@@ -18,7 +17,6 @@ import { watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import NavBar from './components/NavBar.vue'
 import SiteFooter from './components/Footer.vue'
-import ThemeSwitcher from './components/ThemeSwitcher.vue'
 
 const { t, locale } = useI18n()
 watch(locale, () => {

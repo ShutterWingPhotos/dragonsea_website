@@ -1,17 +1,17 @@
 :root {
-  --bg: #0D0D0D;
-  --bg-2: #111111;
-  --bg-3: #181818;
-  --accent: #5CFF8A;
-  --accent-dim: rgba(92, 255, 138, 0.12);
-  --accent-red: #FF5C5C;
-  --accent-yellow: #FFD95C;
-  --text: #E8E8E8;
-  --text-muted: #555555;
-  --border-dim: 1px solid #1e1e1e;
+  --bg: #F5F1E8;
+  --bg-2: #EDE8D8;
+  --bg-3: #E4DDCA;
+  --accent: #1B3A6B;
+  --accent-dim: rgba(27, 58, 107, 0.08);
+  --accent-red: #E8621A;
+  --accent-yellow: #C97C1A;
+  --text: #1B2B3A;
+  --text-muted: #7A7A6A;
+  --border-dim: 1px solid #D4CDB8;
   --border-accent: 2px solid var(--accent);
-  --font-head: 'Space Grotesk', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-head: 'Archivo Narrow', sans-serif;
+  --font-mono: 'Share Tech Mono', monospace;
   --nav-h: 56px;
   --container: 1200px;
 }
@@ -47,9 +47,7 @@ html {
   font-size: 18px;
 }
 
-/* [data-theme] bumps specificity so this wins over each theme's own
-   --font-head / --font-mono declarations (which also key off [data-theme]). */
-html[lang="zh"][data-theme] {
+html[lang="zh"] {
   --font-head: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
   --font-mono: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
 }
@@ -74,9 +72,9 @@ body::after {
   position: fixed;
   inset: 0;
   background-image:
-    linear-gradient(rgba(92, 255, 138, 0.022) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(92, 255, 138, 0.022) 1px, transparent 1px);
-  background-size: 32px 32px;
+    linear-gradient(rgba(27, 58, 107, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(27, 58, 107, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
   pointer-events: none;
   z-index: 0;
 }

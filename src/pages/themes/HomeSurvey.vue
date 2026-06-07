@@ -418,7 +418,8 @@
             to="/gallery"
             class="survey-doc-card"
           >
-            <div class="survey-doc-card__img" :style="{ background: item.bg }">
+            <div class="survey-doc-card__img" :style="{ background: item.img ? undefined : item.bg }">
+              <img v-if="item.img" :src="item.img" :alt="t(item.labelKey)" class="survey-doc-card__photo" loading="lazy">
               <div class="survey-doc-card__ref">DOC-{{ String(i + 1).padStart(3, '0') }}</div>
               <div class="survey-doc-card__overlay">{{ t('survey-view-archive') }}</div>
             </div>
@@ -470,9 +471,9 @@ function copyAddress() {
 }
 
 const previewItems = [
-  { bg: 'linear-gradient(135deg, #0a2016 0%, #153a24 60%, #081510 100%)', labelKey: 'survey-preview-a' },
-  { bg: 'linear-gradient(135deg, #0a1520 0%, #152a3a 60%, #080f15 100%)', labelKey: 'survey-preview-b' },
-  { bg: 'linear-gradient(135deg, #1a0a0a 0%, #2e1212 60%, #120808 100%)', labelKey: 'survey-preview-c' },
+  { img: '/gallery/above_ground_subway_station.png', labelKey: 'gallery-above-ground-subway' },
+  { img: '/gallery/dragonsea_centralbusinessdistrict_skyscrapers.png', labelKey: 'gallery-cbd-skyscrapers' },
+  { img: '/gallery/airport_overview.png', labelKey: 'gallery-airport-overview' },
 ]
 </script>
 
@@ -1002,17 +1003,29 @@ const previewItems = [
   padding: 0.6rem;
 }
 
+.survey-doc-card__photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
 .survey-doc-card__ref {
   font-size: 0.6rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: rgba(27,58,107, 0.4);
   font-family: var(--font-mono);
+  position: relative;
+  z-index: 1;
 }
 
 .survey-doc-card__overlay {
   position: absolute;
   inset: 0;
+  z-index: 2;
   background: rgba(245, 241, 232, 0.8);
   display: flex;
   align-items: center;

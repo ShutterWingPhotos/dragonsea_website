@@ -5,9 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:metro": "VITE_THEME=metro vite",
-    "dev:fids": "VITE_THEME=fids vite",
-    "dev:survey": "VITE_THEME=survey vite",
     "build": "vite build",
     "preview": "vite preview"
   },
