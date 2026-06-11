@@ -62,7 +62,7 @@
           <div class="survey-data-cell survey-data-cell--addr" @click="copyAddress">
             <div class="survey-data-cell__label">{{ t('survey-server-address') }}</div>
             <div class="survey-data-cell__val survey-data-cell__val--addr">
-              59.110.15.64<span class="survey-dim">:25565</span>
+              202.189.13.224<span class="survey-dim">:25566</span>
               <span class="survey-copied" :class="{ 'survey-copied--show': copied }">{{ t('copied') }}</span>
             </div>
           </div>
@@ -309,7 +309,7 @@
             </div>
             <div class="survey-plot__ref">{{ t('survey-plot') }} 01</div>
             <div class="survey-plot__title">{{ t('join-btn') }}</div>
-            <div class="survey-plot__addr">59.110.15.64:25565</div>
+            <div class="survey-plot__addr">202.189.13.224:25566</div>
             <div class="survey-plot__action">{{ copied ? '✓ ' + t('copied') : t('copy-hint') }}</div>
           </div>
 
@@ -459,7 +459,7 @@ const onlineNamesTitle = computed(() =>
   !hasError.value && users.value.length > 0 ? users.value.join(', ') : ''
 )
 
-const SERVER_ADDRESS = '59.110.15.64:25565'
+const SERVER_ADDRESS = '202.189.13.224:25566'
 
 function copyAddress() {
   copyText(SERVER_ADDRESS).then(() => {
