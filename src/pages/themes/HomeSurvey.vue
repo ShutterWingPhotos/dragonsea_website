@@ -358,6 +358,21 @@
             <span class="survey-plot__cta">{{ t('survey-open-link') }}</span>
           </a>
 
+          <!-- Plot 5: QQ Group -->
+          <a class="survey-plot" href="https://qm.qq.com/q/pmQKzsZJV6" target="_blank">
+            <div class="survey-plot__brackets" aria-hidden="true">
+              <span class="brk brk--tl"></span>
+              <span class="brk brk--tr"></span>
+              <span class="brk brk--bl"></span>
+              <span class="brk brk--br"></span>
+            </div>
+            <div class="survey-plot__ref">{{ t('survey-plot') }} 05</div>
+            <div class="survey-plot__title">{{ t('qq-btn') }}</div>
+            <div class="survey-plot__addr">QQ群：1081514596</div>
+            <div class="survey-plot__desc">{{ t('qq-desc') }}</div>
+            <span class="survey-plot__cta">{{ t('survey-open-link') }}</span>
+          </a>
+
         </div>
       </div>
     </section>
