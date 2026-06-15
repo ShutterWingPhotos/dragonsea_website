@@ -59,13 +59,12 @@
               {{ loading ? '—' : hasError ? '—' : latency }}<span class="survey-dim"> ms</span>
             </div>
           </div>
-          <div class="survey-data-cell survey-data-cell--addr" @click="copyAddress">
+          <a class="survey-data-cell survey-data-cell--addr" href="https://qm.qq.com/q/pmQKzsZJV6" target="_blank">
             <div class="survey-data-cell__label">{{ t('survey-server-address') }}</div>
             <div class="survey-data-cell__val survey-data-cell__val--addr">
-              202.189.13.224<span class="survey-dim">:25566</span>
-              <span class="survey-copied" :class="{ 'survey-copied--show': copied }">{{ t('copied') }}</span>
+              {{ t('survey-invite-only') }}
             </div>
-          </div>
+          </a>
         </div>
 
       </div>
@@ -300,7 +299,7 @@
         <div class="survey-plots">
 
           <!-- Plot 1: Join -->
-          <div class="survey-plot survey-plot--primary" @click="copyAddress">
+          <a class="survey-plot survey-plot--primary" href="https://qm.qq.com/q/pmQKzsZJV6" target="_blank">
             <div class="survey-plot__brackets" aria-hidden="true">
               <span class="brk brk--tl"></span>
               <span class="brk brk--tr"></span>
@@ -309,9 +308,9 @@
             </div>
             <div class="survey-plot__ref">{{ t('survey-plot') }} 01</div>
             <div class="survey-plot__title">{{ t('join-btn') }}</div>
-            <div class="survey-plot__addr">202.189.13.224:25566</div>
-            <div class="survey-plot__action">{{ copied ? '✓ ' + t('copied') : t('copy-hint') }}</div>
-          </div>
+            <div class="survey-plot__addr">{{ t('survey-invite-only') }}</div>
+            <div class="survey-plot__action">{{ t('survey-apply-via-qq') }}</div>
+          </a>
 
           <!-- Plot 2: Modpack -->
           <a class="survey-plot" href="https://mcd.shutterwingphotos.cn/" target="_blank">
@@ -448,42 +447,20 @@
     </section>
 
     </div>
-
-    <!-- Copy confirmation toast -->
-    <Transition name="survey-toast">
-      <div v-if="showCopyToast" class="survey-toast">
-        <span class="survey-toast__icon">✓</span>
-        {{ t('copy-success') }}
-      </div>
-    </Transition>
   </div>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useServerStatus } from '../../composables/useServerStatus.js'
-import { copyText } from '../../composables/useClipboard.js'
 
 const { t } = useI18n()
 const { online, userCount, latency, users, loading, hasError, latencyClass } = useServerStatus()
-const copied = ref(false)
-const showCopyToast = ref(false)
 
 const onlineNamesTitle = computed(() =>
   !hasError.value && users.value.length > 0 ? users.value.join(', ') : ''
 )
-
-const SERVER_ADDRESS = '202.189.13.224:25566'
-
-function copyAddress() {
-  copyText(SERVER_ADDRESS).then(() => {
-    copied.value = true
-    showCopyToast.value = true
-    setTimeout(() => { copied.value = false }, 2000)
-    setTimeout(() => { showCopyToast.value = false }, 2400)
-  })
-}
 
 const previewItems = [
   { img: '/gallery/above_ground_subway_station.png', labelKey: 'gallery-above-ground-subway' },
@@ -669,6 +646,8 @@ const previewItems = [
 .survey-data-cell--addr {
   cursor: pointer;
   transition: background 0.12s;
+  text-decoration: none;
+  color: inherit;
 }
 .survey-data-cell--addr:hover { background: var(--bg-3); }
 
@@ -709,56 +688,9 @@ const previewItems = [
 .val--ok   { color: #2D6A4F; }
 .val--warn { color: var(--accent-red); }
 
-.survey-copied {
-  position: absolute;
-  top: 0;
-  right: 0;
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  padding: 1px 5px;
-  background: var(--accent);
-  color: #F5F1E8;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-.survey-copied--show { opacity: 1; }
-
 .survey-dim { font-size: 0.75em; font-weight: 400; color: var(--text-muted); font-family: var(--font-mono); }
 
 /* ── Section shared ──────────────────────── */
-.survey-toast {
-  position: fixed;
-  left: 50%;
-  bottom: 2rem;
-  transform: translateX(-50%);
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  background: var(--text);
-  color: var(--bg);
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  letter-spacing: 0.04em;
-  padding: 0.85rem 1.4rem;
-  border: 1px solid var(--accent);
-  z-index: 200;
-}
-
-.survey-toast__icon {
-  color: var(--accent);
-  font-weight: 700;
-}
-
-.survey-toast-enter-active,
-.survey-toast-leave-active {
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-.survey-toast-enter-from,
-.survey-toast-leave-to {
-  opacity: 0;
-  transform: translateX(-50%) translateY(10px);
-}
 
 .survey-lower {
   position: relative;
